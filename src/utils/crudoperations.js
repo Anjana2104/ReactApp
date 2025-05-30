@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { message , Input } from "antd";
-import { parseExcel, exportToExcel } from "./excelUtils";
+import { parseExcel } from "./excelUtils";
 import { PRIMARY_KEYS } from "../constants/fields";
 
 export const useCrudOperations = ({
@@ -124,7 +124,6 @@ const handleModalOk = (record) => {
   setIsModalOpen(true);
 };
 
-
   const handleUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -167,7 +166,6 @@ const handleModalOk = (record) => {
     handleFieldChange,
     addNewRecord,
     EditableCell,
-    handleUpload,
-    exportExcel: () => exportToExcel(data),
+    handleUpload
   };
 };

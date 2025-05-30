@@ -4,12 +4,12 @@ import {
 import { DownloadOutlined } from "@ant-design/icons";
 import { useCrudOperations } from "../../utils/crudoperations";
 import { PRIMARY_KEYS } from "../../constants/fields";
+import { exportToExcel } from "../../utils/excelUtils";
 
 const EXCLUDED_COLUMNS = ["S.NO", "Resume", "Emp ID", "Lead", "DOJ", "KL Exp (yr)"];
 
 const ResourceFilterTable = ({localData, externalRoleFilter }) => {
   const [selectedSkills, setSelectedSkills] = useState([]);
-  // const [localData, setLocalData] = useState([]);
   const [filters, setFilters] = useState({
     experienceMin: null,
     experienceMax: null,
@@ -19,9 +19,8 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
   const parentSheetName = "Resource Details"
 
   const {
-    data,
+    // data,
     editingKey,
-    exportExcel,
     EditableCell,
     onEdit,
 
@@ -35,7 +34,7 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
   // Extract filtered list of skills based on selected role
   const allSkills = [
     ...new Set(
-      data
+      localData
         .filter(r => !filters.role || r["Role"] === filters.role)
         .flatMap((r) => {
           const primary = String(r["Primary skills"] || "").split(",");
@@ -79,6 +78,10 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
     new Set(filteredData.map((r) => r["Role"]).filter(Boolean))
   ).sort();
 
+ const handleExportFiltered = () => {
+      exportToExcel(filteredData);
+    };
+    
   const getFilteredTableColumns = () => {
     if (!filteredData.length) return [];   
     return Object.keys(filteredData[0])
@@ -101,12 +104,14 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
           
         }),
       }));
+
+      
   };
 
   return (
     <Card
       title="Available Resources Filters"
-      extra={<Button icon={<DownloadOutlined />} onClick={exportExcel}>Export</Button>}
+      extra={<Button icon={<DownloadOutlined />} onClick={handleExportFiltered}>Export</Button>}
     >
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={6}>

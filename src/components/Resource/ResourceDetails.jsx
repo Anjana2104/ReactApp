@@ -4,6 +4,7 @@ import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
 import { RESOURCE_KEYS } from "../../constants/fields";
+import { exportToExcel } from "../../utils/excelUtils";
 
 function ResourceDetails({ localData }) {
     
@@ -29,6 +30,10 @@ function ResourceDetails({ localData }) {
     getRecordId: (record) => String(record["S.NO"]),
   });
 
+   const handleExportFiltered = () => {
+      exportToExcel(localData);
+    };
+
 
   return (
     <div style={{ padding: 24 }}>
@@ -36,7 +41,7 @@ function ResourceDetails({ localData }) {
         <Space style={{ marginBottom: 16 }}>
           <input type="file" accept=".xlsx, .xls" onChange={handleUpload} />
           <Button type="primary" icon={<PlusOutlined />} onClick={addNewRecord}>Add New</Button>
-          <Button icon={<DownloadOutlined />} onClick={exportExcel}>Download Excel</Button>
+          <Button icon={<DownloadOutlined />} onClick={handleExportFiltered}>Download Excel</Button>
         </Space>
 
         <GenericTable data={localData} onEdit={onEdit} onDelete={onDelete} />
