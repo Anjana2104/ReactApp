@@ -3,9 +3,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { PROJECT_DETAILS } from "../../constants/fields";
+import { PROJECT_DETAILS , PRIMARY_KEYS, local_Storage_Key } from "../../constants/fields";
+import { useRef } from "react";
 
 const ClientProjectDetails = () => {
+
+  const sheetName = "Project Details"
+  const tableRef = useRef();
+
   const {
     data,
     editingRecord,
@@ -14,8 +19,10 @@ const ClientProjectDetails = () => {
     deleteRecord,
     onEdit,
     onDelete,
+    editingKey,
+    setEditingKey,
     handleConfirmDelete,
-    handleModalOk,
+    handleSave,
     handleFieldChange,
     addNewRecord,
     handleUpload,
@@ -23,9 +30,9 @@ const ClientProjectDetails = () => {
     setIsModalOpen,
     setDeleteRecord,
   } = useCrudOperations({
-    sheetName: "Project Details",
-    localStorageKey: "project-details",
-    getRecordId: (record) => record.key,
+    sheetName: sheetName,
+    localStorageKey: local_Storage_Key[sheetName],
+    getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
   });
 
   return (
@@ -38,17 +45,26 @@ const ClientProjectDetails = () => {
           <Button icon={<DownloadOutlined />} onClick={exportExcel}>Download Excel</Button>
         </Space>
 
-        <GenericTable data={data} onEdit={onEdit} onDelete={onDelete} />
+        <GenericTable
+        sheetName={sheetName}
+        data={data}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        tableRef={tableRef}
+        editable={true}
+        editingKey={editingKey}
+        onDoubleClickEdit={(record) => setEditingKey(record.key)}        
+        />
 
         <GenericRecordModal
-          open={isModalOpen}
-          mode = {mode}
-          record={editingRecord}
-          fields={PROJECT_DETAILS}
-          onChange={handleFieldChange}
-          onOk={handleModalOk}
-          onCancel={() => setIsModalOpen(false)}
-        />
+        mode={mode}
+        open={isModalOpen}
+        record={editingRecord}
+        fields={PROJECT_DETAILS}
+        onChange={handleFieldChange}
+        onOk={handleSave}
+        onCancel={() => setIsModalOpen(false)}
+      />
 
         <Modal
           title="Confirm Delete"

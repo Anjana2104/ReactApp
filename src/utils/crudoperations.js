@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { message , Input } from "antd";
+import { message  } from "antd";
 import { parseExcel } from "./excelUtils";
-import { PRIMARY_KEYS } from "../constants/fields";
+import { PRIMARY_KEYS , DERIVED_FIELDS, local_Storage_Key} from "../constants/fields";
 
 export const useCrudOperations = ({
   sheetName,
@@ -22,43 +22,54 @@ export const useCrudOperations = ({
     }
   }, [localStorageKey]);
 
-  const onEdit = (record) => {
-    setEditingKey(record.key);
-    setEditingRecord({ ...record });
-    setIsModalOpen(true);
+  const onEdit = (updatedRecord) => {
+    console.log("inside on edit - updatedRecord - ",updatedRecord)
+    const updatedData = data.map((item) =>
+    getRecordId(item) === getRecordId(updatedRecord) ? updatedRecord : item
+    );
+    setData(updatedData);
+    localStorage.setItem(localStorageKey, JSON.stringify(updatedData));
+
+    console.log("inside on edit - updated data - ",updatedData)
+    // propagateDerivedChanges(updatedData)
+    setEditingKey(null); // ✅ End editing
+    setEditingRecord({ ...updatedRecord});
+    // setIsModalOpen(true);
     setMode("Edit");
+    window.dispatchEvent(new Event("resource-data-updated"));
+    message.success("Record updated");
   };
+   
+  
+  // const propagateDerivedChanges = (updatedData) => {
+  //   const derivedLinks = DERIVED_FIELDS[local_Storage_Key[sheetName]] || [];
+  //   console.log("Propapgrate - dervied links", derivedLinks)
+  //   derivedLinks.forEach(({ sourceField, targetobject, targetField }) => {
+  //      const sourceValue = updatedData[sourceField];
+      
+  //      const targetKey = local_Storage_Key[Object.keys(local_Storage_Key).find(
+  //           (k) => k.toLowerCase() === targetobject.toLowerCase()
+  //           )
+  //     ];
 
-  const EditableCell = ({
-        editing,
-        dataIndex,
-        record,
-        children,
-        ...restProps
-      }) => {
-        return (
-          <td {...restProps}>
-            {editing ? (
-              <Input
-                defaultValue={record[dataIndex]}
-                autoFocus
-                onPressEnter={(e) =>
-                  handleSave(record.key, dataIndex, e.target.value)
-                }
-              />
-            ) : (
-              children
-            )}
-          </td>
-        );
-    };
+  //     if (!targetKey) return;
+  //     const existingTargetData = JSON.parse(localStorage.getItem(targetKey) || "[]");
+  //     const updatedTargetData = existingTargetData.map((item) => {
+  //           return item[targetField] !== sourceValue
+  //             ? { ...item, [targetField]: sourceValue }
+  //             : item;
+  //         });
 
-  const handleSave = (field, value) => {
+  //         localStorage.setItem(targetKey, JSON.stringify(updatedTargetData));
+  //         window.dispatchEvent(new Event(`${targetKey}-updated`));
+  //       });
+  //  }
+
+  const handleSave = (key,field, value) => {
     const updated = { ...editingRecord, [field]: value };
     setEditingRecord(updated);
-    console.log("inside handle SAve - updated data till save function",updated)
     handleModalOk(updated); 
-    setEditingKey(null);   // ✅ stop editing mode
+    setEditingKey(null);   
     window.dispatchEvent(new Event("resource-data-updated"));
     message.success("Record updated");
   };
@@ -76,20 +87,21 @@ export const useCrudOperations = ({
     message.success("Record deleted");
   };
 
-const handleModalOk = (record) => {
+const handleModalOk = () => {
       try {
 
-        const id = getRecordId(record);
-        console.log("inside handleModalOk : id   -",id)
+        const id = getRecordId(editingRecord);
+        // console.log("inside handleModalOk : id   -",id)
 
         const updated = data.some((d) => getRecordId(d) === id)
-          ? data.map((d) => (getRecordId(d) === id ? record : d))
-          : [...data, record];
+          ? data.map((d) => (getRecordId(d) === id ? editingRecord : d))
+          : [...data, editingRecord];
 
-        console.log("inside handleModalOk : updated   -",updated)
+        // console.log("inside handleModalOk : updated   -",updated)
 
         setData(updated);
-        localStorage.setItem(localStorageKey, JSON.stringify(updated)); // ✅ cleaned is now serializable
+        localStorage.setItem(localStorageKey, JSON.stringify(updated)); 
+
         setEditingRecord(null);
         setIsModalOpen(false);
         setEditingKey(null);
@@ -134,11 +146,15 @@ const handleModalOk = (record) => {
         }
 
         const primaryKey = PRIMARY_KEYS[sheetName] 
+        console.log("inside handle upload - Primary key for sheet - ",sheetName ," is - ",primaryKey)
 
         const enriched = parsed.map((item, idx) => ({
           ...item,
-          key: item[primaryKey]
+          key: (item[primaryKey])
         }));
+
+        console.log("inside handle upload - enriched data  - ",enriched)
+
         setData(enriched);
         localStorage.setItem(localStorageKey, JSON.stringify(enriched));
         message.success("Data saved to localStorage");
@@ -165,7 +181,7 @@ const handleModalOk = (record) => {
     handleSave,
     handleFieldChange,
     addNewRecord,
-    EditableCell,
+    // EditableCell,
     handleUpload
   };
 };

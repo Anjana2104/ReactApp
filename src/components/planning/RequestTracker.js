@@ -3,19 +3,25 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { REQUEST_TRACKER } from "../../constants/fields";
+import { REQUEST_TRACKER , PRIMARY_KEYS, local_Storage_Key } from "../../constants/fields";
+import { useRef } from "react";
 
 const RequestTracker = () => {
+  const sheetName = "Request Tracker"
+  const tableRef = useRef();
+
   const {
     data,
     editingRecord,
     isModalOpen,
+    editingKey,
+    setEditingKey,
     mode,
     deleteRecord,
     onEdit,
     onDelete,
     handleConfirmDelete,
-    handleModalOk,
+    handleSave,
     handleFieldChange,
     addNewRecord,
     handleUpload,
@@ -23,9 +29,9 @@ const RequestTracker = () => {
     setIsModalOpen,
     setDeleteRecord,
   } = useCrudOperations({
-    sheetName: "Request Tracker",
-    localStorageKey: "request-tracker",
-    getRecordId: (record) => record.key,
+    sheetName: sheetName,
+    localStorageKey: local_Storage_Key[sheetName],
+    getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
   });
 
   return (
@@ -38,17 +44,26 @@ const RequestTracker = () => {
           <Button icon={<DownloadOutlined />} onClick={exportExcel}>Download Excel</Button>
         </Space>
 
-        <GenericTable data={data} onEdit={onEdit} onDelete={onDelete} />
+       <GenericTable
+        data={data}
+        sheetName={sheetName}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        tableRef={tableRef}
+        editable={true}
+        editingKey={editingKey}
+        onDoubleClickEdit={(record) => setEditingKey(record.key)}        
+        />
 
-        <GenericRecordModal
+       <GenericRecordModal
+          mode={mode}
           open={isModalOpen}
-          mode = {mode}
           record={editingRecord}
           fields={REQUEST_TRACKER}
           onChange={handleFieldChange}
-          onOk={handleModalOk}
+          onOk={handleSave}
           onCancel={() => setIsModalOpen(false)}
-        />
+       />
 
         <Modal
           title="Confirm Delete"

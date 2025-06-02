@@ -3,19 +3,26 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { SPACE_KEYS } from "../../constants/fields";
+import { SPACE_KEYS ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
+import { useRef } from "react";
+
 
 const ClientSpaceDetails = () => {
+  const sheetName = "Space Details"
+  const tableRef = useRef();
+
   const {
     data,
     editingRecord,
+    editingKey,
+    setEditingKey,
     isModalOpen,
     mode,
     deleteRecord,
     onEdit,
     onDelete,
     handleConfirmDelete,
-    handleModalOk,
+    handleSave,
     handleFieldChange,
     addNewRecord,
     handleUpload,
@@ -23,9 +30,9 @@ const ClientSpaceDetails = () => {
     setIsModalOpen,
     setDeleteRecord,
   } = useCrudOperations({
-    sheetName: "Space Details",
-    localStorageKey: "client-spaces",
-    getRecordId: (record) => record.key,
+    sheetName: sheetName,
+    localStorageKey: local_Storage_Key[sheetName],
+    getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
   });
 
   return (
@@ -38,16 +45,25 @@ const ClientSpaceDetails = () => {
           <Button icon={<DownloadOutlined />} onClick={exportExcel}>Download Excel</Button>
         </Space>
 
-        <GenericTable data={data} onEdit={onEdit} onDelete={onDelete} />
+          <GenericTable
+          data={data}
+          sheetName={sheetName}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          tableRef={tableRef}
+          editable={true}
+          editingKey={editingKey}
+          onDoubleClickEdit={(record) => setEditingKey(record.key)}        
+          />
 
         <GenericRecordModal
-          open={isModalOpen}
-          mode = {mode}
-          record={editingRecord}
-          fields={SPACE_KEYS}
-          onChange={handleFieldChange}
-          onOk={handleModalOk}
-          onCancel={() => setIsModalOpen(false)}
+            mode={mode}
+            open={isModalOpen}
+            record={editingRecord}
+            fields={SPACE_KEYS}
+            onChange={handleFieldChange}
+            onOk={handleSave}
+            onCancel={() => setIsModalOpen(false)}
         />
 
         <Modal

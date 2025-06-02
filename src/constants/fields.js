@@ -12,20 +12,18 @@ export const SPACE_KEYS = [
 ];
 
 export const PROJECT_DETAILS = [
-  "S.NO", "Project Name", "Client Space", "Client Principal" ,"POC", "Other POCs" , "Handled by" , "Active"
-];
+  "S.NO", "Project Name", "Client Space", "Client Principal" ,"POC", "Other POCs" , "Handled by"  , "Active"];
 
 export const REQUEST_DETAILS = [
   "S.NO", "Request ID", "Project Name", "Skills", "Comment"];
 
 export const REQUEST_TRACKER = [
-    	"Request ID",	"Beeline ID",	"Project  Name",	"Client SPACE",	
+    	"Request ID",	"Beeline ID",	"Project Name",	"Client SPACE",	
     "#Resources"	,"Level",	"Skill Set"	, "Duration",
     "Location",	"Demand Date","Closing Date"	,"Handled By",	"Status",	"Comment"
 ];
 
-export const SOW_DETAILS = [
-  "S.NO",	"SOW Name",	"Account"	, "Active"]
+export const SOW_DETAILS = [  "S.NO",	"SOW Name",	"Account"	, "Active"]
 
 
   export const DEMAND_FULFILLMENT = [
@@ -35,14 +33,58 @@ export const SOW_DETAILS = [
       "Allocation %",	"Country",	"Comment"]
 
   export const PRIMARY_KEYS = {
-  "Resource Details": "RA ID",
-  "Project Details" : " Project Name",
+  "Resource Details":"RA ID",
+  "Project Details" :"Project Name",
   "Request Details" :"Request ID",
-  "Space Details" : "S.NO",
-  "Request Tracker" : "Request ID",
-  "SOW Details" :"S.NO",
+  "Space Details"   :"S.NO",
+  "Request Tracker" :"Request ID",
+  "SOW Details"     :"S.NO",
   "Demand Fullfillment":"S.NO"
 };
+ 
+export const NONEDITABLE_FIELDS = {
+  "Resource Details":[],
+  "Space Details"   :[],
+  "Project Details" :[],
+  "Request Details" :["Project Name"],
+  "Request Tracker" :["Project Name","Client SPACE"],
+  "SOW Details"     :[],
+  "Demand Fullfillment":["Client Project","Client Space",]
+}
 
+  export const local_Storage_Key = {
+  "Resource Details":"resource-data",
+  "Project Details" :"project-details",
+  "Request Details" :"request-details",
+  "Space Details"   :"client-spaces",
+  "Request Tracker" :"request-tracker",
+  "SOW Details"     :"sow-details",
+  "Demand Fullfillment":"demand-fulfillment",
+};
 
-  
+export const DERIVED_FIELDS = {
+  "project-details": [
+    {
+      sourceField: "Project Name",
+      targetobject: "request-tracker",
+      targetField: "Project Name"
+    }
+    ,
+    {
+      sourceField: "Client SPACE",
+      targetobject: "request-details",
+      targetField: "Client SPACE"
+    }
+    // ,
+    // {
+    //   sourceField: "Project Name",
+    //   targetobject: "demand-fulfillment",
+    //   targetField: "Client Project"
+    // },
+    // {
+    //   sourceField: "Client SPACE",
+    //   targetobject: "demand-fulfillment",
+    //   targetField: "Client Space"
+    // }
+  ]
+};

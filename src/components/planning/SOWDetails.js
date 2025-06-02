@@ -3,19 +3,25 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { SOW_DETAILS } from "../../constants/fields";
+import { SOW_DETAILS ,PRIMARY_KEYS, local_Storage_Key } from "../../constants/fields";
+import { useRef } from "react";
 
 const SOWDetails = () => {
+  const sheetName = "SOW Details"
+  const tableRef = useRef();
+
   const {
     data,
     editingRecord,
+    editingKey,
+    setEditingKey,
     isModalOpen,
     mode,
     deleteRecord,
     onEdit,
     onDelete,
     handleConfirmDelete,
-    handleModalOk,
+    handleSave,
     handleFieldChange,
     addNewRecord,
     handleUpload,
@@ -23,9 +29,9 @@ const SOWDetails = () => {
     setIsModalOpen,
     setDeleteRecord,
   } = useCrudOperations({
-    sheetName: "SOW Details",
-    localStorageKey: "sow-details",
-    getRecordId: (record) => record.key,
+    sheetName: sheetName,
+    localStorageKey: local_Storage_Key[sheetName],
+    getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
   });
 
   return (
@@ -38,16 +44,25 @@ const SOWDetails = () => {
           <Button icon={<DownloadOutlined />} onClick={exportExcel}>Download Excel</Button>
         </Space>
 
-        <GenericTable data={data} onEdit={onEdit} onDelete={onDelete} />
+        <GenericTable
+        data={data}
+        sheetName={sheetName}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        tableRef={tableRef}
+        editable={true}
+        editingKey={editingKey}
+        onDoubleClickEdit={(record) => setEditingKey(record.key)}        
+        />
 
         <GenericRecordModal
-          open={isModalOpen}
-          mode = {mode}
-          record={editingRecord}
-          fields={SOW_DETAILS}
-          onChange={handleFieldChange}
-          onOk={handleModalOk}
-          onCancel={() => setIsModalOpen(false)}
+            mode={mode}
+            open={isModalOpen}
+            record={editingRecord}
+            fields={SOW_DETAILS}
+            onChange={handleFieldChange}
+            onOk={handleSave}
+            onCancel={() => setIsModalOpen(false)}
         />
 
         <Modal

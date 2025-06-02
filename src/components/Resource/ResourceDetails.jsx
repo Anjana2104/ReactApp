@@ -3,11 +3,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { RESOURCE_KEYS } from "../../constants/fields";
+import { RESOURCE_KEYS ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { exportToExcel } from "../../utils/excelUtils";
+import { useRef } from "react";
 
 function ResourceDetails({ localData }) {
     
+  const sheetName = "Resource Details"
+
   const {
     editingRecord,
     isModalOpen,
@@ -16,46 +19,70 @@ function ResourceDetails({ localData }) {
     onEdit,
     onDelete,
     handleConfirmDelete,
-    handleModalOk,
     handleSave,
     handleFieldChange,
     addNewRecord,
     handleUpload,
-    exportExcel,
     setIsModalOpen,
+    editingKey,
+    setEditingKey,
     setDeleteRecord,
   } = useCrudOperations({
-    sheetName: "Resource Details",
-    localStorageKey: "resource-data",
-    getRecordId: (record) => String(record["S.NO"]),
+    sheetName: sheetName ,
+    localStorageKey: local_Storage_Key[sheetName],
+    getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
   });
 
    const handleExportFiltered = () => {
       exportToExcel(localData);
     };
 
+  const tableRef = useRef();
 
   return (
-    <div style={{ padding: 24 }}>
-      <Card> 
-        <Space style={{ marginBottom: 16 }}>
-          <input type="file" accept=".xlsx, .xls" onChange={handleUpload} />
-          <Button type="primary" icon={<PlusOutlined />} onClick={addNewRecord}>Add New</Button>
-          <Button icon={<DownloadOutlined />} onClick={handleExportFiltered}>Download Excel</Button>
-        </Space>
+<div style={{ padding: 24 }}>
+  <Card>
+    {/* Use flexbox to align file input left and buttons right */}
+    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+      {/* You can hide or reposition this if needed */}
+      <input type="file" accept=".xlsx, .xls" onChange={handleUpload} />
 
-        <GenericTable data={localData} onEdit={onEdit} onDelete={onDelete} />
+      {/* Right-aligned buttons */}
+      <Space>
+        <Button type="primary" icon={<PlusOutlined />} onClick={addNewRecord}>
+          Add New
+        </Button>
+        <Button onClick={() => tableRef.current?.clearFilters()}>
+          Clear Filters
+        </Button>
+        <Button icon={<DownloadOutlined />} onClick={handleExportFiltered}>
+          Export
+        </Button>
         
-        <GenericRecordModal
-          mode = {mode}
-          open={isModalOpen}
-          record={editingRecord}
-          fields={RESOURCE_KEYS}
-          onChange={handleFieldChange}
-          onOk={handleSave}
-          onCancel={() => setIsModalOpen(false)}
-        />
+      </Space>
+    </div>
 
+
+    <GenericTable
+        data={localData}
+        sheetName={sheetName}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        tableRef={tableRef}
+        editable={true}
+        editingKey={editingKey}
+        onDoubleClickEdit={(record) => setEditingKey(record.key)}
+      />
+
+      <GenericRecordModal
+        mode={mode}
+        open={isModalOpen}
+        record={editingRecord}
+        fields={RESOURCE_KEYS}
+        onChange={handleFieldChange}
+        onOk={handleSave}
+        onCancel={() => setIsModalOpen(false)}
+      />
         <Modal
           title="Confirm Delete"
           open={!!deleteRecord}

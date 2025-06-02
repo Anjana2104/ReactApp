@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState , useRef } from "react";
 import {
   Card, Row, Col, Select, InputNumber, Table, Button} from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import { useCrudOperations } from "../../utils/crudoperations";
+import GenericTable from "../GenericTable";
 import { PRIMARY_KEYS } from "../../constants/fields";
 import { exportToExcel } from "../../utils/excelUtils";
 
@@ -16,13 +17,15 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
     role: null,
   });
  
+  const tableRef = useRef();
   const parentSheetName = "Resource Details"
 
   const {
-    // data,
     editingKey,
-    EditableCell,
+    setEditingKey,
+    // EditableCell,
     onEdit,
+    onDelete
 
   } = useCrudOperations({
     sheetName: parentSheetName,
@@ -81,7 +84,7 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
  const handleExportFiltered = () => {
       exportToExcel(filteredData);
     };
-    
+
   const getFilteredTableColumns = () => {
     if (!filteredData.length) return [];   
     return Object.keys(filteredData[0])
@@ -109,10 +112,27 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
   };
 
   return (
-    <Card
+   <Card
       title="Available Resources Filters"
-      extra={<Button icon={<DownloadOutlined />} onClick={handleExportFiltered}>Export</Button>}
+      extra={
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button onClick={() => {
+            setSelectedSkills([]);
+            setFilters({
+              experienceMin: null,
+              experienceMax: null,
+              role: null,
+            });
+          }}>
+            Clear Filters
+          </Button>
+          <Button icon={<DownloadOutlined />} onClick={handleExportFiltered}>
+            Export
+          </Button>
+        </div>
+      }
     >
+
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={6}>
           <Select
@@ -170,19 +190,15 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
         </Col>
       </Row>
 
-     <Table
-          rowKey="key"
-          key={editingKey ?? 'default'}// ✅ Force re-render when editing stops
-          rowClassName={(record) => record.key === editingKey ? 'editing-row' : ''}  
-          components={{ body: { cell: EditableCell } }}
-          columns={getFilteredTableColumns()}
-          dataSource={filteredData}
-          onRow={(record) => ({
-            onDoubleClick: () => onEdit(record), // ✅ THIS FIXES IT
-          })}
-          pagination={{ pageSize: 5 }}
-          size="small"
-          scroll={{ x: 1500 }}  
+       <GenericTable
+        data={filteredData}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        tableRef={tableRef}
+        editable={true}
+        editingKey={editingKey}
+        onDoubleClickEdit={(record) => setEditingKey(record.key)}
+        getColumns={getFilteredTableColumns}
       />
 
     </Card>

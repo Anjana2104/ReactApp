@@ -3,19 +3,25 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { DEMAND_FULFILLMENT } from "../../constants/fields";
+import { DEMAND_FULFILLMENT , local_Storage_Key,PRIMARY_KEYS} from "../../constants/fields";
+import { useRef } from "react";
 
 const DemandFulfillment = () => {
+  const sheetName = "Demand Fullfillment"
+  const tableRef = useRef();
+
   const {
     data,
     editingRecord,
     isModalOpen,
+    editingKey,
+    setEditingKey,
     mode,
     deleteRecord,
     onEdit,
     onDelete,
     handleConfirmDelete,
-    handleModalOk,
+    handleSave,
     handleFieldChange,
     addNewRecord,
     handleUpload,
@@ -23,9 +29,9 @@ const DemandFulfillment = () => {
     setIsModalOpen,
     setDeleteRecord,
   } = useCrudOperations({
-    sheetName: "Demand Fullfillment",
-    localStorageKey: "demand-fulfillment",
-    getRecordId: (record) => record.key,
+    sheetName: sheetName,
+    localStorageKey: local_Storage_Key[sheetName],
+    getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
   });
 
   return (
@@ -38,16 +44,25 @@ const DemandFulfillment = () => {
           <Button icon={<DownloadOutlined />} onClick={exportExcel}>Download Excel</Button>
         </Space>
 
-        <GenericTable data={data} onEdit={onEdit} onDelete={onDelete} />
+        <GenericTable
+        data={data}
+        sheetName={sheetName}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        tableRef={tableRef}
+        editable={true}
+        editingKey={editingKey}
+        onDoubleClickEdit={(record) => setEditingKey(record.key)}        
+        />
 
-        <GenericRecordModal
-          open={isModalOpen}
-          mode = {mode}
-          record={editingRecord}
-          fields={DEMAND_FULFILLMENT}
-          onChange={handleFieldChange}
-          onOk={handleModalOk}
-          onCancel={() => setIsModalOpen(false)}
+       <GenericRecordModal
+            mode={mode}
+            open={isModalOpen}
+            record={editingRecord}
+            fields={DEMAND_FULFILLMENT}
+            onChange={handleFieldChange}
+            onOk={handleSave}
+            onCancel={() => setIsModalOpen(false)}
         />
 
         <Modal

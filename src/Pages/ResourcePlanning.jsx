@@ -16,6 +16,7 @@ function ResourcePlanning() {
   const navigate = useNavigate();
   const { Title } = Typography;
 
+
   return (
     
     <Card style={{ margin: 24 }}>
