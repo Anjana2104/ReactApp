@@ -4,6 +4,7 @@ import "./index.css";
 import Home from "./Pages/Home";
 import ResourceDetails from "./components/Resource/ResourceDetails";
 import ResourceInsights from "./components/Resource/ResourceInsights";
+import DemandInsights from "./components/planning/DemandInsights";
 import ResourcePlanning from "./Pages/ResourcePlanning";
 import ResourceInformation from "./Pages/ResourceInformation";
 
@@ -17,6 +18,8 @@ root.render(
       <Route path="/insights" element={<ResourceInsights />} />
       <Route path="/planning" element={<ResourcePlanning />} />
       <Route path="/resource-information" element={<ResourceInformation />} />
+       <Route path="/demand-insights" element={<DemandInsights />} />
+      
       
     </Routes>
   </Router>

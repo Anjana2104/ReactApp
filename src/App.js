@@ -33,7 +33,7 @@ function App() {
       
       setData(updatedData);
       localStorage.setItem("resource-data", JSON.stringify(updatedData));
-      console.log("Saved to localStorage:");
+      // console.log("Saved to localStorage:");
 
       message.success("Record deleted");
     }
@@ -72,7 +72,7 @@ const handleUpload = (e) => {
   const file = e.target.files[0];
   if (file) {
     parseExcel(file, (parsedData) => {
-      console.log("Raw parsed data:", parsedData);
+      // console.log("Raw parsed data:", parsedData);
 
       if (!Array.isArray(parsedData) || parsedData.length === 0) {
         message.error("Parsed data is empty or invalid. Check file format.");
@@ -82,7 +82,7 @@ const handleUpload = (e) => {
       setData(parsedData);
 
       localStorage.setItem("resource-data", JSON.stringify(parsedData));
-      console.log("LocalStorage after save");
+      // console.log("LocalStorage after save");
       message.success("Data saved to localStorage");
     });
   }

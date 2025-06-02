@@ -148,6 +148,10 @@ const GenericTable = ({
     ...item,
   }));
 
+  const handleChange = (pagination, filters, sorter) => {
+    setFilteredInfo(filters); // store applied filters
+  };
+
   return (
     <Table
       rowKey="key"
@@ -157,6 +161,7 @@ const GenericTable = ({
       pagination={{ pageSize: 5 }}
       size="small"
       scroll={{ x: true }}
+      onChange={handleChange}  
     />
   );
 };

@@ -37,12 +37,15 @@ const DemandFulfillment = () => {
   return (
     <div style={{ padding: 24 }}>
       <Card>
-
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Space style={{ marginBottom: 16 }}>
           <input type="file" accept=".xlsx, .xls" onChange={handleUpload} />
           <Button type="primary" icon={<PlusOutlined />} onClick={addNewRecord}>Add New</Button>
           <Button icon={<DownloadOutlined />} onClick={exportExcel}>Download Excel</Button>
         </Space>
+
+        <Button onClick={() => window.open("/demand-insights", "demandInsights")}>Demand Insights</Button>
+      </div>
 
         <GenericTable
         data={data}

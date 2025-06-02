@@ -11,8 +11,8 @@ export const parseExcel = (file, callback, sheetName) => {
       ? sheetName
       : workbook.SheetNames[0];
 
-    console.log("Available sheets:", workbook.SheetNames);
-    console.log("Requested sheet:", sheetToParse);
+    // console.log("Available sheets:", workbook.SheetNames);
+    // console.log("Requested sheet:", sheetToParse);
 
     const worksheet = workbook.Sheets[sheetToParse];
     if (!worksheet) {
@@ -43,11 +43,41 @@ export const parseExcel = (file, callback, sheetName) => {
           })
         );
 
+
         record["S.NO"] = index + 1;
         return record;
       });
 
-    } else {
+    }
+    else if (sheetToParse === "Demand Fullfillment") {
+      // 🔧 Custom parsing for "Resource Details"
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+      const headers = jsonData[0].slice(1).map(h => h?.toString().trim().replace(/\n/g, " "));
+
+      parsedData = jsonData.slice(1).map((row, index) => {
+        const record = Object.fromEntries(
+          headers.map((h, i) => {
+            let value = row[i + 1];
+
+            if (h === "Expected Offboarding Date" && typeof value === "number") {
+              const baseDate = new Date(1899, 11, 30);
+              value = new Date(baseDate.getTime() + value * 86400000)
+                .toISOString()
+                .split("T")[0];
+            }
+
+            return [h, value];
+          })
+        );
+
+
+        record["S.NO"] = index + 1;
+        return record;
+      });
+
+    }
+    
+    else {
       // ✅ Clean generic parsing for other sheets
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
       // console.log("jsonData:", jsonData);
