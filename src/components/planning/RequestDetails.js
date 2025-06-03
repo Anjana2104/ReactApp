@@ -85,14 +85,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { REQUEST_DETAILS ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
+import { REQUEST_DETAILS_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { useRef } from "react";
 import { exportToExcel } from "../../utils/excelUtils";
 
 const RequestDetails = () => {
   const sheetName = "Request Details"
   const tableRef = useRef();
-  const fields= REQUEST_DETAILS
+  const fields= REQUEST_DETAILS_SCHEMA.map(field => field.key);
   
   const {
     data,

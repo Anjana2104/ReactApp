@@ -86,14 +86,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { DEMAND_FULFILLMENT ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
+import { DEMAND_FULFILLMENT_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { useRef } from "react";
 import { exportToExcel } from "../../utils/excelUtils";
 
 const DemandFulfillment = () => {
   const sheetName = "Demand Fullfillment"
   const tableRef = useRef();
-  const fields= DEMAND_FULFILLMENT
+  const fields= DEMAND_FULFILLMENT_SCHEMA.map(field => field.key);
   
   const {
     data,

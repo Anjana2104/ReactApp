@@ -3,7 +3,6 @@ import { Row, Col, Empty} from "antd";
 import DemandBySpace from "../Insights/DemandBySpace";
 import DemandToBeOffboarded from "../Insights/DemandToBeOffboarded";
 import { local_Storage_Key} from "../../constants/fields";
-// import ResourceFilterTable from "../Insights/ResourceFilterTable" ;
 
 function DemandInsights() {
 

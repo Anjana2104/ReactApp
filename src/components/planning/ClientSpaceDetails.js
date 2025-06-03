@@ -3,14 +3,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { SPACE_KEYS ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
+import { SPACE_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { useRef } from "react";
 import { exportToExcel } from "../../utils/excelUtils";
 
 const ClientSpaceDetails = () => {
   const sheetName = "Space Details"
   const tableRef = useRef();
-  const fields= SPACE_KEYS
+  const fields= SPACE_SCHEMA.map(field => field.key);
   
   const {
     data,

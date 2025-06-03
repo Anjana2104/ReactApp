@@ -3,13 +3,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { RESOURCE_KEYS ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
+import { RESOURCE_KEYS_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { exportToExcel } from "../../utils/excelUtils";
 import { useRef } from "react";
 
 function ResourceDetails({ localData }) {
     
   const sheetName = "Resource Details"
+  const fields= RESOURCE_KEYS_SCHEMA.map(field => field.key);
 
   const {
     editingRecord,
@@ -81,7 +82,7 @@ function ResourceDetails({ localData }) {
         mode={mode}
         open={isModalOpen}
         record={editingRecord}
-        fields={RESOURCE_KEYS}
+        fields={fields}
         onChange={handleFieldChange}
         onOk={handleSave}
         onCancel={() => setIsModalOpen(false)}

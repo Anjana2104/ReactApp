@@ -86,14 +86,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { PROJECT_DETAILS ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
+import { PROJECT_DETAILS_SCHEMA, local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { useRef } from "react";
 import { exportToExcel } from "../../utils/excelUtils";
 
 const ClientProjectDetails = () => {
   const sheetName = "Project Details"
   const tableRef = useRef();
-  const fields= PROJECT_DETAILS
+  const fields= PROJECT_DETAILS_SCHEMA.map(field => field.key);
   
   const {
     data,

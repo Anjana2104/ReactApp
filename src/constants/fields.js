@@ -1,38 +1,101 @@
-// src/constants/fields.js
 
-export const RESOURCE_KEYS = [
-  "S.NO","Emp ID", "RA ID", "Emp Name", "Status", "Utilised in ZS", "Resume",
-  "Previous ZS work Experience", "DOJ", "KL Exp (yr)", "Total Workex (yr)",
-  "Location Constraint", "Role", "Current Allocation", "Lead",
-  "Primary skills", "Secondary skills", "Comment"
+// *********************** START OF PAGES SCHEMAS *****************************************
+export const RESOURCE_KEYS_SCHEMA = [
+  { key:"S.NO",type: "string" },
+  { key:"Emp ID", type: "string" },
+  { key:"RA ID", type: "string" },
+  { key:"Emp Name", type: "string" },
+  { key:"Status", type: "string" },
+  { key:"Utilised in ZS", type: "string" },
+  { key:"Resume",type: "string" },
+  { key:"Previous ZS work Experience",type: "string" }, 
+  { key:"DOJ", type: "string" },
+  { key:"KL Exp (yr)",type: "string" },
+  { key:"Total Workex (yr)",type: "string" },
+  { key:"Location Constraint", type: "string" },
+  { key:"Role", type: "string" },
+  { key:"Current Allocation",type: "string" },
+  { key:"Lead",type: "string" },
+  { key:"Primary skills", type: "string" },
+  { key:"Secondary skills", type: "string" },
+  { key:"Comment",type: "string" }
 ];
 
-export const SPACE_KEYS = [
-  "S.NO","Client Space", "Client Principal/AP", "Client Manager", "RA ZS Account Manager"
+export const SPACE_SCHEMA = [
+  { key: "S.NO",type: "string" },
+  { key:"Client Space", type: "string" },
+  { key:"Client Principal/AP",type: "string" }, 
+  { key:"Client Manager",type: "string" },
+  { key: "RA ZS Account Manager",type: "string" }
 ];
 
-export const PROJECT_DETAILS = [
-  "S.NO", "Project Name", "Client Space", "Client Principal" ,"POC", "Other POCs" , "Handled by"  , "Active"];
+export const PROJECT_DETAILS_SCHEMA = [
+  { key:"S.NO", type: "string" },
+  { key:"Project Name",type: "string" },
+  { key:"Client Space",type: "string" },
+  { key:"Client Principal" ,type: "string" },
+  { key:"POC", type: "string" },
+  { key:"Other POCs" ,type: "string" },
+  { key:"Handled by"  , type: "string" },
+  { key:"Active"  , type: "string" }
+  ];
 
-export const REQUEST_DETAILS = [
-  "S.NO", "Request ID", "Project Name", "Skills", "Comment"];
 
-export const REQUEST_TRACKER = [
-    	"Request ID",	"Beeline ID",	"Project Name",	"Client SPACE",	
-    "#Resources"	,"Level",	"Skill Set"	, "Duration",
-    "Location",	"Demand Date","Closing Date"	,"Handled By",	"Status",	"Comment"
+export const REQUEST_DETAILS_SCHEMA = [
+  { key:"S.NO", type: "string" },
+  { key:"Request ID", type: "string" },
+  { key:"Project Name", type: "string" },
+  { key:"Skills", type: "string" },
+  { key:"Comment", type: "string" }
 ];
 
-export const SOW_DETAILS = [  "S.NO",	"SOW Name",	"Account"	, "Active"]
+export const REQUEST_TRACKER_SCHEMA = [
+   { key: "Request ID",	type: "string" },
+   { key: "Beeline ID",	type: "string" },
+   { key: "Project Name",	type: "string" },
+   { key: "Client SPACE",	type: "string" },
+   { key: "#Resources"	,type: "string" },
+   { key: "Level",	type: "string" },
+   { key: "Skill Set"	, type: "string" },
+   { key: "Duration",type: "string" },
+   { key: "Location",	type: "string" },
+   { key: "Demand Date",type: "string" },
+   { key:"Closing Date"	,type: "string" },
+   { key: "Handled By",	type: "string" },
+   { key:"Status",	type: "string" },
+   { key:"Comment" , type: "string" }
+];
 
+export const SOW_DETAILS_SCHEMA = [  
+  { key:"S.NO",	type: "string" },
+  { key:"SOW Name",	type: "string" },
+  { key:"Account"	, type: "string" },
+  { key:"Active" , type: "string" },
+]
 
-  export const DEMAND_FULFILLMENT = [
-    	"S.NO","Request ID",	"SOW Name",	"Client Project", "Candidate Name","Client Space",
-     	"Candidate Status",	"Work Location","TimeZone",	"Type",	"Fullfillment Date",
-      "Joining Date",	"Expected Offboarding Date"	,"Project Role (for SOW)",	
-      "Allocation %",	"Country",	"Comment"]
+export const DEMAND_FULFILLMENT_SCHEMA = [
+    	{ key:"S.NO",type: "string" },
+      { key:"Request ID",	type: "string" },
+      { key:"SOW Name",	type: "string" },
+      { key:"Client Project", type: "string" },
+      { key:"Candidate Name",type: "string" },
+      { key:"Client Space",type: "string" },
+     	{ key:"Candidate Status",	type: "string" },
+      { key:"Work Location",type: "string" },
+      { key:"TimeZone",	type: "string" },
+      { key:"Type",	type: "string" },
+      { key:"Fullfillment Date",type: "string" },
+      { key:"Joining Date",	type: "string" },
+      { key:"Expected Offboarding Date"	,type: "string" },
+      { key:"Project Role (for SOW)",	type: "string" },
+      { key:"Allocation %",	type: "string" },
+      { key:"Country",	type: "string" },
+      { key:"Comment" ,type: "string" }
+    ]
 
-  export const PRIMARY_KEYS = {
+// *********************** END OF PAGES SCHEMAS *****************************************
+
+export const PRIMARY_KEYS = {
   "Resource Details":"RA ID",
   "Project Details" :"Project Name",
   "Request Details" :"Request ID",
@@ -75,16 +138,6 @@ export const DERIVED_FIELDS = {
       targetobject: "request-details",
       targetField: "Client SPACE"
     }
-    // ,
-    // {
-    //   sourceField: "Project Name",
-    //   targetobject: "demand-fulfillment",
-    //   targetField: "Client Project"
-    // },
-    // {
-    //   sourceField: "Client SPACE",
-    //   targetobject: "demand-fulfillment",
-    //   targetField: "Client Space"
-    // }
+    
   ]
 };

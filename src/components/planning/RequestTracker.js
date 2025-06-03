@@ -85,14 +85,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { REQUEST_TRACKER ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
+import { REQUEST_TRACKER_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { useRef } from "react";
 import { exportToExcel } from "../../utils/excelUtils";
 
 const RequestTracker = () => {
   const sheetName = "Request Tracker"
   const tableRef = useRef();
-  const fields= REQUEST_TRACKER
+  const fields= REQUEST_TRACKER_SCHEMA.map(field => field.key);
   
   const {
     data,

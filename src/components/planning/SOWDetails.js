@@ -85,14 +85,14 @@ import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
 import GenericTable from "../GenericTable";
 import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
-import { SOW_DETAILS ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
+import { SOW_DETAILS_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { useRef } from "react";
 import { exportToExcel } from "../../utils/excelUtils";
 
 const SOWDetails = () => {
   const sheetName = "SOW Details"
   const tableRef = useRef();
-  const fields= SOW_DETAILS
+  const fields= SOW_DETAILS_SCHEMA.map(field => field.key);
   
   const {
     data,
