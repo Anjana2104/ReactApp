@@ -1,3 +1,4 @@
+
 import { Card } from "antd";
 import {
   BarChart,
@@ -9,10 +10,8 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-const ResourceByRoleChart = ({
-  setSelectedRole,
-  available
-}) => {
+const DemandToBeOffboarded = ({data,setSelectedSpace}) => {
+ 
   const groupBy = (array, key) =>
     array.reduce((acc, curr) => {
       const val = curr[key] || "Unknown";
@@ -20,17 +19,23 @@ const ResourceByRoleChart = ({
       return acc;
     }, {});
 
+    const activeData = data.filter(item => {
+      const status = (item["Candidate Status"] || "").toLowerCase();
+      // console.log("Status = ",status)
+      return status === "joined" || status === "selected" || status === "offered";
+    });
+
   const getChartData = field =>
-    Object.entries(groupBy(available, field)).map(([name, value]) => ({ name, value }));
+    Object.entries(groupBy(activeData, field)).map(([name, value]) => ({ name, value }));
 
   return (
-    <Card title="Available Resources by Role">
+    <Card title="Demand by Spaces">
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
-          data={getChartData("Role")}
+          data={getChartData("Client Space")}
           margin={{ top: 40, right: 30, left: 20, bottom: 80 }}
           onClick={(e) => {
-            if (e && e.activeLabel) setSelectedRole(e.activeLabel);
+            if (e && e.activeLabel) setSelectedSpace(e.activeLabel);
           }}
         >
           <XAxis 
@@ -43,11 +48,11 @@ const ResourceByRoleChart = ({
           <YAxis allowDecimals={false} />
           <Tooltip />
           <Legend verticalAlign="top" align="right" />
-          <Bar dataKey="value" fill="#8884d8" name="Resource Count" cursor="pointer" />
+          <Bar dataKey="value" fill="#8884d8" name="Demand Count" />
         </BarChart>
       </ResponsiveContainer>
     </Card>
   );
 };
 
-export default ResourceByRoleChart;
+export default DemandToBeOffboarded;

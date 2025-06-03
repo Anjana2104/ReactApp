@@ -7,6 +7,7 @@ import RequestDetails from "../components/planning/RequestDetails";
 import RequestTracker from "../components/planning/RequestTracker";
 import SOWDetails from "../components/planning/SOWDetails";
 import DemandFulfillment from "../components/planning/DemandFulfillment";
+import DemandInsights from "../components/planning/DemandInsights";
 import {  HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -48,6 +49,9 @@ function ResourcePlanning() {
         </TabPane>
         <TabPane tab="Demand Fulfillment" key="6">
            <DemandFulfillment />
+        </TabPane>
+        <TabPane tab="Demand Insights" key="7">
+           <DemandInsights />
         </TabPane>
       </Tabs>
     </Card>
