@@ -1,29 +1,33 @@
 import { Table, Button, Space, Popconfirm, Input } from "antd";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo, forwardRef, useImperativeHandle } from "react";
 import { NONEDITABLE_FIELDS } from "../constants/fields";
 
-const GenericTable = ({
+const GenericTable = forwardRef(({
   data,
   sheetName,
   onEdit,
   onDelete,
-  tableRef,
   editable = false,
   editingKey = null,
   onDoubleClickEdit = () => {},
   getColumns,
-}) => {
+// }) => {
+}, ref) => {
   const [filteredInfo, setFilteredInfo] = useState({});
 
-  useEffect(() => {
-    if (tableRef) {
-      tableRef.current = {
-        clearFilters: () => {
-          setFilteredInfo({});
-        },
-      };
-    }
-  }, [tableRef]);
+  // useEffect(() => {
+  //   if (tableRef) {
+  //     tableRef.current = {
+  //       clearFilters: () => {
+  //         setFilteredInfo({});
+  //       },
+  //     };
+  //   }
+  // }, [tableRef]);
+
+  useImperativeHandle(ref, () => ({
+  clearFilters: () => setFilteredInfo({}),
+   }));
 
   const getColumnSearchProps = (key) => {
     const uniqueValues = [...new Set(data.map((item) => item[key]).filter(Boolean))];
@@ -148,6 +152,10 @@ const GenericTable = ({
     ...item,
   }));
 
+  const handleChange = (pagination, filters, sorter) => {
+    setFilteredInfo(filters); // store applied filters
+  };
+
   return (
     <Table
       rowKey="key"
@@ -157,8 +165,9 @@ const GenericTable = ({
       pagination={{ pageSize: 5 }}
       size="small"
       scroll={{ x: true }}
+      onChange={handleChange}
     />
   );
-};
+});
 
 export default GenericTable;

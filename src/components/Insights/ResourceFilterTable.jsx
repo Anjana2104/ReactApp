@@ -9,7 +9,7 @@ import { exportToExcel } from "../../utils/excelUtils";
 
 const EXCLUDED_COLUMNS = ["S.NO", "Resume", "Emp ID", "Lead", "DOJ", "KL Exp (yr)"];
 
-const ResourceFilterTable = ({localData, externalRoleFilter }) => {
+const ResourceFilterTable = ({localData, externalRoleFilter,tableRef }) => {
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [filters, setFilters] = useState({
     experienceMin: null,
@@ -17,7 +17,7 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
     role: null,
   });
  
-  const tableRef = useRef();
+  // const tableRef = useRef();
   const parentSheetName = "Resource Details"
 
   const {
@@ -85,7 +85,7 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
       exportToExcel(filteredData);
     };
 
-  const getFilteredTableColumns = () => {
+  const getFilteredTableColumns = (filteredInfo = {}) => {
     if (!filteredData.length) return [];   
     return Object.keys(filteredData[0])
       .filter((key) => !EXCLUDED_COLUMNS.includes(key))
@@ -98,6 +98,7 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
           value: String(val),
         })),
         filterSearch: true,
+        filteredValue: filteredInfo[key] || null,  // ✅ REQUIRED!
         onFilter: (value, record) =>
           String(record[key] || "").toLowerCase().includes(String(value).toLowerCase()),
         onCell: (record) => ({
@@ -123,6 +124,8 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
               experienceMax: null,
               role: null,
             });
+            // Clear built-in AntD Table filters
+            tableRef.current?.clearFilters?.();
           }}>
             Clear Filters
           </Button>
@@ -194,7 +197,7 @@ const ResourceFilterTable = ({localData, externalRoleFilter }) => {
         data={filteredData}
         onEdit={onEdit}
         onDelete={onDelete}
-        tableRef={tableRef}
+        ref={tableRef}
         editable={true}
         editingKey={editingKey}
         onDoubleClickEdit={(record) => setEditingKey(record.key)}

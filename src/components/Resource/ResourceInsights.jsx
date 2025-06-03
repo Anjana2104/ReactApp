@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import  { useState,useRef } from "react";
 import { Row, Col, Empty} from "antd";
 import ResourceStatusChart from "../Insights/ResourceStatusChart";
 import ResourcesByRole from "../Insights/ResourcesByRole";
@@ -7,6 +7,7 @@ import ResourceFilterTable from "../Insights/ResourceFilterTable" ;
 function ResourceInsights({ localData = [] }) {
 
   const [selectedRole, setSelectedRole] = useState(null); 
+  const tableRef = useRef();
 
   if (!localData.length) return <Empty description="No data available" style={{ marginTop: 64 }} />;
 
@@ -41,6 +42,7 @@ function ResourceInsights({ localData = [] }) {
          <ResourceFilterTable
             localData={available}
             externalRoleFilter={selectedRole} 
+             tableRef={tableRef}
             />
         </Col>
       </Row>

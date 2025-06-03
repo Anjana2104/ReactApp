@@ -68,7 +68,7 @@ function ResourceDetails({ localData }) {
         sheetName={sheetName}
         onEdit={onEdit}
         onDelete={onDelete}
-        tableRef={tableRef}
+        ref={tableRef}
         editable={true}
         editingKey={editingKey}
         onDoubleClickEdit={(record) => setEditingKey(record.key)}
