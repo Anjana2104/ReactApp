@@ -92,8 +92,7 @@ import { exportToExcel } from "../../utils/excelUtils";
 const SOWDetails = () => {
   const sheetName = "SOW Details"
   const tableRef = useRef();
-  const fields= SOW_DETAILS_SCHEMA.map(field => field.key);
-  
+ 
   const {
     data,
     editingRecord,
@@ -163,7 +162,7 @@ const SOWDetails = () => {
             mode={mode}
             open={isModalOpen}
             record={editingRecord}
-            fields={fields}
+            schema={SOW_DETAILS_SCHEMA}
             onChange={handleFieldChange}
             onOk={handleSave}
             onCancel={() => setIsModalOpen(false)}

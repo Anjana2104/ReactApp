@@ -10,8 +10,7 @@ import { exportToExcel } from "../../utils/excelUtils";
 const ClientSpaceDetails = () => {
   const sheetName = "Space Details"
   const tableRef = useRef();
-  const fields= SPACE_SCHEMA.map(field => field.key);
-  
+   
   const {
     data,
     editingRecord,
@@ -81,7 +80,7 @@ const ClientSpaceDetails = () => {
             mode={mode}
             open={isModalOpen}
             record={editingRecord}
-            fields={fields}
+            schema={SPACE_SCHEMA}
             onChange={handleFieldChange}
             onOk={handleSave}
             onCancel={() => setIsModalOpen(false)}

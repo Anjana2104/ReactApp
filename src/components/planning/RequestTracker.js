@@ -92,8 +92,7 @@ import { exportToExcel } from "../../utils/excelUtils";
 const RequestTracker = () => {
   const sheetName = "Request Tracker"
   const tableRef = useRef();
-  const fields= REQUEST_TRACKER_SCHEMA.map(field => field.key);
-  
+   
   const {
     data,
     editingRecord,
@@ -163,7 +162,7 @@ const RequestTracker = () => {
             mode={mode}
             open={isModalOpen}
             record={editingRecord}
-            fields={fields}
+            schema={REQUEST_TRACKER_SCHEMA}
             onChange={handleFieldChange}
             onOk={handleSave}
             onCancel={() => setIsModalOpen(false)}

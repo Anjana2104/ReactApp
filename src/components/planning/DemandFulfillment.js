@@ -93,8 +93,7 @@ import { exportToExcel } from "../../utils/excelUtils";
 const DemandFulfillment = () => {
   const sheetName = "Demand Fullfillment"
   const tableRef = useRef();
-  const fields= DEMAND_FULFILLMENT_SCHEMA.map(field => field.key);
-  
+    
   const {
     data,
     editingRecord,
@@ -164,7 +163,7 @@ const DemandFulfillment = () => {
             mode={mode}
             open={isModalOpen}
             record={editingRecord}
-            fields={fields}
+            schema={DEMAND_FULFILLMENT_SCHEMA}
             onChange={handleFieldChange}
             onOk={handleSave}
             onCancel={() => setIsModalOpen(false)}

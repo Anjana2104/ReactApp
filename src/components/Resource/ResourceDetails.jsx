@@ -10,7 +10,6 @@ import { useRef } from "react";
 function ResourceDetails({ localData }) {
     
   const sheetName = "Resource Details"
-  const fields= RESOURCE_KEYS_SCHEMA.map(field => field.key);
 
   const {
     editingRecord,
@@ -82,7 +81,7 @@ function ResourceDetails({ localData }) {
         mode={mode}
         open={isModalOpen}
         record={editingRecord}
-        fields={fields}
+        schema={RESOURCE_KEYS_SCHEMA}
         onChange={handleFieldChange}
         onOk={handleSave}
         onCancel={() => setIsModalOpen(false)}

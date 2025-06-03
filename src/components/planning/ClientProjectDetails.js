@@ -93,8 +93,7 @@ import { exportToExcel } from "../../utils/excelUtils";
 const ClientProjectDetails = () => {
   const sheetName = "Project Details"
   const tableRef = useRef();
-  const fields= PROJECT_DETAILS_SCHEMA.map(field => field.key);
-  
+    
   const {
     data,
     editingRecord,
@@ -164,7 +163,7 @@ const ClientProjectDetails = () => {
             mode={mode}
             open={isModalOpen}
             record={editingRecord}
-            fields={fields}
+            schema={PROJECT_DETAILS_SCHEMA}
             onChange={handleFieldChange}
             onOk={handleSave}
             onCancel={() => setIsModalOpen(false)}

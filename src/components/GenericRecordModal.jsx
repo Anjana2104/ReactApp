@@ -1,27 +1,67 @@
-import { Modal, Input } from "antd";
+import { Modal, Input, DatePicker, InputNumber } from "antd";
+import dayjs from "dayjs";
 
-export default function RecordModal({ open, record, fields, onChange, onOk, onCancel, mode }) {
+export default function RecordModal({ open, record, schema, onChange, onOk, onCancel, mode }) {
   const isEdit = mode != "Add";
   const modalTitle = isEdit ? "Edit Record" : "Add New Record";
 
-  return (
+ return (
     <Modal title={modalTitle} open={open} onOk={onOk} onCancel={onCancel} okText="Save">
       {record &&
-        fields.map((key) => (
-          <div key={key} style={{ marginBottom: 12 }}>
-            <label><b>{key}:</b></label>
-            <Input
-              type={key === "DOJ" ? "date" : "text"}
-              value={
-                key === "DOJ" && record[key]
-                  ? new Date(record[key]).toISOString().split("T")[0]
-                  : record[key] || ""
-              }
-              onChange={(e) => onChange(e, key)}
-              disabled={key === "S.NO"} // ✅ Prevent editing auto-increment field
-            />
-          </div>
-        ))}
+        schema.map(({ key, type = "string", values = [] }) => {
+          const commonProps = {
+            style: { width: "100%" },
+            disabled: key === "S.NO",
+          };
+
+          const label = (
+            <label key={key} style={{ marginBottom: 4, display: "block" }}>
+              <b>{key}:</b>
+            </label>
+          );
+
+          let input = null;
+
+          switch (type) {
+            case "date":
+              input = (
+                <DatePicker
+                  {...commonProps}
+                  value={record[key] ? dayjs(record[key]) : null}
+                  onChange={(date, dateString) =>
+                    onChange({ target: { value: dateString } }, key)
+                  }
+                />
+              );
+              break;
+
+            case "number":
+              input = (
+                <InputNumber
+                  {...commonProps}
+                  value={record[key]}
+                  onChange={(val) => onChange({ target: { value: val } }, key)}
+                />
+              );
+              break;
+
+            default:
+              input = (
+                <Input
+                  {...commonProps}
+                  value={record[key] || ""}
+                  onChange={(e) => onChange(e, key)}
+                />
+              );
+          }
+
+          return (
+            <div key={key} style={{ marginBottom: 12 }}>
+              {label}
+              {input}
+            </div>
+          );
+        })}
     </Modal>
   );
 }
