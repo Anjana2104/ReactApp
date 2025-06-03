@@ -40,30 +40,6 @@ export const useCrudOperations = ({
     message.success("Record updated");
   };
    
-  
-  // const propagateDerivedChanges = (updatedData) => {
-  //   const derivedLinks = DERIVED_FIELDS[local_Storage_Key[sheetName]] || [];
-  //   console.log("Propapgrate - dervied links", derivedLinks)
-  //   derivedLinks.forEach(({ sourceField, targetobject, targetField }) => {
-  //      const sourceValue = updatedData[sourceField];
-      
-  //      const targetKey = local_Storage_Key[Object.keys(local_Storage_Key).find(
-  //           (k) => k.toLowerCase() === targetobject.toLowerCase()
-  //           )
-  //     ];
-
-  //     if (!targetKey) return;
-  //     const existingTargetData = JSON.parse(localStorage.getItem(targetKey) || "[]");
-  //     const updatedTargetData = existingTargetData.map((item) => {
-  //           return item[targetField] !== sourceValue
-  //             ? { ...item, [targetField]: sourceValue }
-  //             : item;
-  //         });
-
-  //         localStorage.setItem(targetKey, JSON.stringify(updatedTargetData));
-  //         window.dispatchEvent(new Event(`${targetKey}-updated`));
-  //       });
-  //  }
 
   const handleSave = (key,field, value) => {
     const updated = { ...editingRecord, [field]: value };

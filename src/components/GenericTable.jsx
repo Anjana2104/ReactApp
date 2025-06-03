@@ -25,9 +25,19 @@ const GenericTable = forwardRef(({
   //   }
   // }, [tableRef]);
 
+
   useImperativeHandle(ref, () => ({
-  clearFilters: () => setFilteredInfo({}),
-   }));
+      clearFilters: () => setFilteredInfo({}),
+      getFilteredData: () => {
+        // Apply current filter logic manually
+        return enhancedData.filter((record) => {
+          return Object.entries(filteredInfo).every(([key, values]) => {
+            if (!values || values.length === 0) return true;
+            return values.includes(String(record[key]));
+          });
+        });
+      },
+    }));
 
   const getColumnSearchProps = (key) => {
     const uniqueValues = [...new Set(data.map((item) => item[key]).filter(Boolean))];

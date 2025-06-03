@@ -5,12 +5,13 @@ import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
 import { SPACE_KEYS ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { useRef } from "react";
-
+import { exportToExcel } from "../../utils/excelUtils";
 
 const ClientSpaceDetails = () => {
   const sheetName = "Space Details"
   const tableRef = useRef();
-
+  const fields= SPACE_KEYS
+  
   const {
     data,
     editingRecord,
@@ -26,7 +27,6 @@ const ClientSpaceDetails = () => {
     handleFieldChange,
     addNewRecord,
     handleUpload,
-    exportExcel,
     setIsModalOpen,
     setDeleteRecord,
   } = useCrudOperations({
@@ -35,22 +35,43 @@ const ClientSpaceDetails = () => {
     getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
   });
 
+  const handleExportFiltered = () => {
+      const filtered = tableRef.current?.getFilteredData?.();
+      exportToExcel(filtered || data); // fallback to full data if filter is not available
+  };
+
   return (
     <div style={{ padding: 24 }}>
       <Card>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
 
-        <Space style={{ marginBottom: 16 }}>
-          <input type="file" accept=".xlsx, .xls" onChange={handleUpload} />
-          <Button type="primary" icon={<PlusOutlined />} onClick={addNewRecord}>Add New</Button>
-          <Button icon={<DownloadOutlined />} onClick={exportExcel}>Download Excel</Button>
-        </Space>
+           {/* Left: Upload Input */}
+            <div>
+              <input type="file" accept=".xlsx, .xls" onChange={handleUpload} />
+            </div>
+
+            {/* Right: Buttons */}
+            <Space>
+              <Button type="primary" icon={<PlusOutlined />} onClick={addNewRecord}>
+                Add New
+              </Button>
+              <Button onClick={() => tableRef.current?.clearFilters()}>
+                Clear Filters
+              </Button>
+              <Button icon={<DownloadOutlined />} onClick={handleExportFiltered}>
+                Export
+              </Button>
+
+            </Space>
+
+        </div>
 
           <GenericTable
           data={data}
           sheetName={sheetName}
           onEdit={onEdit}
           onDelete={onDelete}
-          tableRef={tableRef}
+          ref={tableRef}
           editable={true}
           editingKey={editingKey}
           onDoubleClickEdit={(record) => setEditingKey(record.key)}        
@@ -60,7 +81,7 @@ const ClientSpaceDetails = () => {
             mode={mode}
             open={isModalOpen}
             record={editingRecord}
-            fields={SPACE_KEYS}
+            fields={fields}
             onChange={handleFieldChange}
             onOk={handleSave}
             onCancel={() => setIsModalOpen(false)}

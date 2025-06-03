@@ -33,11 +33,14 @@ function ResourceDetails({ localData }) {
     getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
   });
 
-   const handleExportFiltered = () => {
-      exportToExcel(localData);
-    };
-
   const tableRef = useRef();
+
+   const handleExportFiltered = () => {
+      const filtered = tableRef.current?.getFilteredData?.();
+      exportToExcel(filtered || localData); // fallback to full data if filter is not available
+  };
+
+  
 
   return (
 <div style={{ padding: 24 }}>
