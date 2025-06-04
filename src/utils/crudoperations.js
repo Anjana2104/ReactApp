@@ -23,33 +23,7 @@ export const useCrudOperations = ({
     }
   }, [localStorageKey]);
 
-  const onEdit = (updatedRecord) => {
-    console.log("inside on edit - updatedRecord - ",updatedRecord)
-    const updatedData = data.map((item) =>
-    getRecordId(item) === getRecordId(updatedRecord) ? updatedRecord : item
-    );
-    setData(updatedData);
-    localStorage.setItem(localStorageKey, JSON.stringify(updatedData));
 
-    console.log("inside on edit - updated data - ",updatedData)
-    // propagateDerivedChanges(updatedData)
-    setEditingKey(null); // ✅ End editing
-    setEditingRecord({ ...updatedRecord});
-    // setIsModalOpen(true);
-    setMode("Edit");
-    window.dispatchEvent(new Event("resource-data-updated"));
-    message.success("Record updated");
-  };
-   
-
-  const handleSave = (key,field, value) => {
-    const updated = { ...editingRecord, [field]: value };
-    setEditingRecord(updated);
-    handleModalOk(updated); 
-    setEditingKey(null);   
-    window.dispatchEvent(new Event("resource-data-updated"));
-    message.success("Record updated");
-  };
 
   const onDelete = (record) => {
     setDeleteRecord(record);
@@ -64,6 +38,31 @@ export const useCrudOperations = ({
     message.success("Record deleted");
   };
 
+  const handleSave = (key,field, value) => {
+    const updated = { ...editingRecord, [field]: value };
+    setEditingRecord(updated);
+    handleModalOk(updated); 
+    setEditingKey(null);   
+    window.dispatchEvent(new Event("resource-data-updated"));
+    message.success("Record updated");
+  };
+
+    const onEdit = (updatedRecord) => {
+    console.log("inside on edit - updatedRecord - ",updatedRecord)
+    const updatedData = data.map((item) =>
+    getRecordId(item) === getRecordId(updatedRecord) ? updatedRecord : item
+    );
+    setData(updatedData);
+    localStorage.setItem(localStorageKey, JSON.stringify(updatedData));
+    console.log("inside on edit - updated data - ",updatedData)
+    setEditingKey(null); 
+    // setEditingRecord({ ...updatedRecord});
+    setIsModalOpen(false);
+    setEditingKey(null);
+    window.dispatchEvent(new Event("resource-data-updated"));
+    message.success("Record updated");
+  };
+   
 const handleModalOk = () => {
       try {
 
@@ -78,7 +77,6 @@ const handleModalOk = () => {
 
         setData(updated);
         localStorage.setItem(localStorageKey, JSON.stringify(updated)); 
-
         setEditingRecord(null);
         setIsModalOpen(false);
         setEditingKey(null);

@@ -13,7 +13,7 @@ function AvailableResourceTabs() {
   const [localData, setLocalData] = useState([]);
 
     // ✅ Add this to sync localData when the app loads and when events happen
-  useEffect(() => {
+    useEffect(() => {
         const fetchData = () => {
           const stored = localStorage.getItem("resource-data");
           if (stored) {

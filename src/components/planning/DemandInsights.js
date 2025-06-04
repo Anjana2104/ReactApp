@@ -10,12 +10,27 @@ function DemandInsights() {
  const [localData, setLocalData] = useState([]);
  const [SelectedSpace, setSelectedSpace] = useState([]);
 
- useEffect(() => {
-    const storedData = localStorage.getItem(local_Storage_Key[parentSheetName]);
-    if (storedData) {
-      setLocalData(JSON.parse(storedData));
-    }
+
+// ✅ Add this to sync localData when the app loads and when events happen
+useEffect(() => {
+    const fetchData = () => {
+      const stored = localStorage.getItem(local_Storage_Key[parentSheetName]);
+      if (stored) {
+        setLocalData(JSON.parse(stored));
+      }
+    };
+
+    fetchData(); // Initial load
+
+    // Listen for global updates
+    window.addEventListener("resource-data-updated", fetchData);
+
+    // Cleanup listener
+    return () => {
+      window.removeEventListener("resource-data-updated", fetchData);
+    };
   }, []);
+
 
   if (!localData.length) return <Empty description="No data available" style={{ marginTop: 64 }} />;
  
