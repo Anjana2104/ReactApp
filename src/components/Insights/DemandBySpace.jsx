@@ -43,7 +43,7 @@ const DemandBySpace = ({ data, setSelectedSpace }) => {
   return (
     <>
       <Card
-        title="Active Demands by Spaces"
+        title="Active Resources by Spaces"
         extra={
           <Button type="link" onClick={() => {
             setModalTitle("All Active Demands");
