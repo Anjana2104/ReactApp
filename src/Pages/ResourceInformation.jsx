@@ -4,10 +4,12 @@ import ResourceInsights from "../components/Resource/ResourceInsights";
 import {  HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import {  useEffect ,useState } from "react";
+import { local_Storage_Key} from "../constants/fields";
 
 const { TabPane } = Tabs;
 
 function AvailableResourceTabs() {
+  const sheetName = "Resource Details"
   const navigate = useNavigate();
   const { Title } = Typography;
   const [localData, setLocalData] = useState([]);
@@ -15,7 +17,7 @@ function AvailableResourceTabs() {
     // ✅ Add this to sync localData when the app loads and when events happen
     useEffect(() => {
         const fetchData = () => {
-          const stored = localStorage.getItem("resource-data");
+          const stored = localStorage.getItem(local_Storage_Key[sheetName]);
           if (stored) {
             setLocalData(JSON.parse(stored));
           }

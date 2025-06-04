@@ -17,7 +17,6 @@ root.render(
       <Route path="/insights" element={<ResourceInsights />} />
       <Route path="/planning" element={<ResourcePlanning />} />
       <Route path="/resource-information" element={<ResourceInformation />} />
-      
     </Routes>
   </Router>
 );

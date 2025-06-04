@@ -11,7 +11,7 @@ function DemandInsights() {
  const [SelectedSpace, setSelectedSpace] = useState([]);
 
 
-// ✅ Add this to sync localData when the app loads and when events happen
+  // ✅ Add this to sync localData when the app loads and when events happen
 useEffect(() => {
     const fetchData = () => {
       const stored = localStorage.getItem(local_Storage_Key[parentSheetName]);

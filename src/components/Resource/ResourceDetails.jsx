@@ -5,11 +5,32 @@ import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
 import { RESOURCE_KEYS_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { exportToExcel } from "../../utils/excelUtils";
-import { useRef } from "react";
+import { useRef ,useEffect ,useState } from "react";
+import { useDummyData } from "../../apis/DummyData"; 
 
 function ResourceDetails({ localData }) {
     
   const sheetName = "Resource Details"
+  const { dummyData, loading } = useDummyData();  
+  const [initialData, setInitialData] = useState([]);
+
+//  useEffect(() => {
+//   if (!loading) {
+//     if (dummyData.length > 0) {
+//       setInitialData(dummyData);
+//       // ✅ Save backend dummyData to localStorage
+//       localStorage.setItem(local_Storage_Key[sheetName], JSON.stringify(dummyData));
+//     } else {
+//       // ✅ Fallback to localStorage if dummyData is empty
+//       const stored = localStorage.getItem(local_Storage_Key[sheetName]);
+//       if (stored) {
+//         const parsed = JSON.parse(stored);
+//         setInitialData(parsed);
+//       }
+//     }
+//   }
+// }, [dummyData, loading]);
+
 
   const {
     editingRecord,
@@ -31,7 +52,8 @@ function ResourceDetails({ localData }) {
     sheetName: sheetName ,
     localStorageKey: local_Storage_Key[sheetName],
     getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
-    schema : {RESOURCE_KEYS_SCHEMA}
+    schema : {RESOURCE_KEYS_SCHEMA},
+    initialData 
   });
 
   const tableRef = useRef();
@@ -42,7 +64,6 @@ function ResourceDetails({ localData }) {
   };
 
   
-
   return (
 <div style={{ padding: 24 }}>
   <Card>
@@ -68,6 +89,7 @@ function ResourceDetails({ localData }) {
 
 
     <GenericTable
+        // data={initialData}
         data={localData}
         sheetName={sheetName}
         onEdit={onEdit}

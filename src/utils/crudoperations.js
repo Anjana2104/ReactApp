@@ -7,7 +7,7 @@ export const useCrudOperations = ({
   sheetName,
   localStorageKey,
   getRecordId,
-  schema
+  schema 
 }) => {
   const [data, setData] = useState([]);
   const [editingRecord, setEditingRecord ] = useState(null);
