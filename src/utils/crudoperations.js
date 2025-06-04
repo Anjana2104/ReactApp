@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { message  } from "antd";
 import { parseExcel } from "./excelUtils";
-import { PRIMARY_KEYS , DERIVED_FIELDS, local_Storage_Key} from "../constants/fields";
+import { PRIMARY_KEYS , DERIVED_FIELDS, local_Storage_Key, RESOURCE_KEYS_SCHEMA} from "../constants/fields";
 
 export const useCrudOperations = ({
   sheetName,
   localStorageKey,
   getRecordId,
+  schema
 }) => {
   const [data, setData] = useState([]);
   const [editingRecord, setEditingRecord ] = useState(null);
@@ -122,20 +123,20 @@ const handleModalOk = () => {
         }
 
         const primaryKey = PRIMARY_KEYS[sheetName] 
-        console.log("inside handle upload - Primary key for sheet - ",sheetName ," is - ",primaryKey)
+        // console.log("inside handle upload - Primary key for sheet - ",sheetName ," is - ",primaryKey)
 
         const enriched = parsed.map((item, idx) => ({
           ...item,
           key: (item[primaryKey])
         }));
 
-        console.log("inside handle upload - enriched data  - ",enriched)
+        // console.log("inside handle upload - enriched data  - ",enriched)
 
         setData(enriched);
         localStorage.setItem(localStorageKey, JSON.stringify(enriched));
         message.success("Data saved to localStorage");
         window.dispatchEvent(new Event("resource-data-updated"));
-      }, sheetName);
+      }, sheetName ,RESOURCE_KEYS_SCHEMA);
     }
   };
 

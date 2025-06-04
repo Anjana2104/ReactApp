@@ -115,6 +115,7 @@ const DemandFulfillment = () => {
     sheetName: sheetName,
     localStorageKey: local_Storage_Key[sheetName],
     getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
+    schema : DEMAND_FULFILLMENT_SCHEMA
   });
 
   const handleExportFiltered = () => {
@@ -156,6 +157,7 @@ const DemandFulfillment = () => {
           ref={tableRef}
           editable={true}
           editingKey={editingKey}
+          schema={DEMAND_FULFILLMENT_SCHEMA}
           onDoubleClickEdit={(record) => setEditingKey(record.key)}        
           />
 

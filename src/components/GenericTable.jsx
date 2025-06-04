@@ -1,6 +1,7 @@
 import { Table, Button, Space, Popconfirm, Input } from "antd";
 import { useState, useMemo, forwardRef, useImperativeHandle } from "react";
 import { NONEDITABLE_FIELDS } from "../constants/fields";
+import dayjs from "dayjs";
 
 const GenericTable = forwardRef(({
   data,
@@ -11,20 +12,15 @@ const GenericTable = forwardRef(({
   editingKey = null,
   onDoubleClickEdit = () => {},
   getColumns,
-// }) => {
+  schema = []
 }, ref) => {
   const [filteredInfo, setFilteredInfo] = useState({});
 
-  // useEffect(() => {
-  //   if (tableRef) {
-  //     tableRef.current = {
-  //       clearFilters: () => {
-  //         setFilteredInfo({});
-  //       },
-  //     };
-  //   }
-  // }, [tableRef]);
-
+   // 🟢 useMemo to build a lookup map of field types from schema
+  const typeMap = useMemo(() =>
+    Object.fromEntries(schema.map(({ key, type }) => [key, type])),
+    [schema]
+  );
 
   useImperativeHandle(ref, () => ({
       clearFilters: () => setFilteredInfo({}),
@@ -66,6 +62,16 @@ const GenericTable = forwardRef(({
         key,
         editable,
         ...getColumnSearchProps(key),
+        
+        // 🟢 Format cell values based on schema type
+        render: (text) => {
+          const type = typeMap[key];
+          if (type === "date" && dayjs(text).isValid()) {
+            return dayjs(text).format("YYYY-MM-DD");
+          }
+          return text;
+        },
+
         onCell: (record) => ({
           record,
           dataIndex: key,
@@ -96,7 +102,7 @@ const GenericTable = forwardRef(({
   const defaultColumns = useMemo(() => {
     if (!data || data.length === 0) return [];
     return getColumns ? getColumns(filteredInfo) : generateColumns();
-  }, [data, filteredInfo, getColumns, editingKey]);
+  }, [data, filteredInfo, getColumns, editingKey , schema]); // 🟢 track schema changes too]);
 
   const EditableCell = ({
     editing,
@@ -111,7 +117,6 @@ const GenericTable = forwardRef(({
 
     const readOnlyFields = NONEDITABLE_FIELDS[sheetName] || [];
     const isReadOnly = readOnlyFields.includes(dataIndex);
-
     const [value, setValue] = useState(record?.[dataIndex] ?? "");
 
     const handleSave = () => {
