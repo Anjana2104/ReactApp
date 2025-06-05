@@ -88,9 +88,9 @@ const GenericTable = forwardRef(({
         <Space>
           {/* {onEdit && <Button type="link" onClick={() => onEdit(record)}>Edit</Button>} */}
           {onDelete && (
-            <Popconfirm title="Confirm delete?" onConfirm={() => onDelete(record)}>
-              <Button danger type="link">Delete</Button>
-            </Popconfirm>
+            <Button danger type="link" onClick={() => onDelete(record)}>
+              Delete
+            </Button>
           )}
         </Space>
       ),

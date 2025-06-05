@@ -5,33 +5,11 @@ import GenericRecordModal from "../GenericRecordModal";
 import { useCrudOperations } from "../../utils/crudoperations";
 import { RESOURCE_KEYS_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { exportToExcel } from "../../utils/excelUtils";
-import { useRef ,useEffect ,useState } from "react";
-import { useDBCrudOperations } from"../../apis/dbCrudOperations"; 
+import { useRef } from "react";
 
 function ResourceDetails({ localData }) {
     
   const sheetName = "Resource Details" 
-  const [initialData, setInitialData] = useState([]);
-  const { useGetData } = useDBCrudOperations("resources");
-  const { dbData, loading } = useGetData();
-
- useEffect(() => {
-  if (!loading) {
-    if (dbData.length > 0) {
-      setInitialData(dbData);
-      // ✅ Save backend Data to localStorage
-      localStorage.setItem(local_Storage_Key[sheetName], JSON.stringify(dbData));
-    } else {
-      // ✅ Fallback to localStorage if Db Data is empty
-      const stored = localStorage.getItem(local_Storage_Key[sheetName]);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setInitialData(parsed);
-      }
-    }
-  }
-}, [dbData, loading]);
-
 
   const {
     editingRecord,
@@ -53,8 +31,7 @@ function ResourceDetails({ localData }) {
     sheetName: sheetName ,
     localStorageKey: local_Storage_Key[sheetName],
     getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
-    schema : {RESOURCE_KEYS_SCHEMA},
-    initialData 
+    schema : {RESOURCE_KEYS_SCHEMA}
   });
 
   const tableRef = useRef();

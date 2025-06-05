@@ -104,6 +104,16 @@ export const PRIMARY_KEYS = {
   "SOW Details"     :"S.NO",
   "Demand Fullfillment":"S.NO"
 };
+
+export const END_POINTS = {
+  "Resource Details":"resources",
+  "Project Details" :"",
+  "Request Details" :"",
+  "Space Details"   :"",
+  "Request Tracker" :"",
+  "SOW Details"     :"",
+  "Demand Fullfillment":""
+};
  
 export const NONEDITABLE_FIELDS = {
   "Resource Details":[],

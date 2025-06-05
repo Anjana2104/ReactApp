@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { message  } from "antd";
 import { parseExcel } from "./excelUtils";
-import { PRIMARY_KEYS , DERIVED_FIELDS, local_Storage_Key, RESOURCE_KEYS_SCHEMA} from "../constants/fields";
+import { PRIMARY_KEYS , END_POINTS} from "../constants/fields";
 import { useDBCrudOperations } from"../apis/dbCrudOperations"; 
 
 export const useCrudOperations = ({
@@ -21,7 +21,7 @@ export const useCrudOperations = ({
     addData,
      updateData, 
      deleteData
-     } = useDBCrudOperations("resources");
+     } = useDBCrudOperations(END_POINTS[sheetName]);
 
 
   //  ******************************************************************************************
@@ -56,6 +56,7 @@ export const useCrudOperations = ({
     setEditingKey(null);
     window.dispatchEvent(new Event("resource-data-updated"));
     message.success("Record updated");
+    
   };
 
   //  ******************************************************************************************
@@ -131,6 +132,7 @@ const handleModalOk = () => {
   //  ******************************************************************************************
   const onDelete = (record) => {
     setDeleteRecord(record);
+    // setIsModalOpen(false); // hide Add/Edit modal if open
   };
 //  ******************************************************************************************
   const handleConfirmDelete = () => {

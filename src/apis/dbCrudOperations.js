@@ -1,25 +1,20 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-// Base URL for API
+// Base URL for API 
 const BASE_URL = "http://localhost:5000";
 
-export const useDBCrudOperations = (endpoint) => {
-  if (!endpoint) {
-    throw new Error("❌ useDBCrudOperations requires an endpoint");
-  }
-
-  const fullApiUrl = `${BASE_URL}/api/${endpoint}`;
-  const fullGetUrl = `${BASE_URL}/${endpoint}`;
-
-  // GET
-  const useGetData = () => {
+  // GET ***********************************************************************************
+  export const useGetData = (endpoint) => {
+     const fullApiUrl = `${BASE_URL}/api/${endpoint}`;
     const [dbData, setDbData] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    console.log("inside useGetData :endpoint: full url  ",endpoint,fullApiUrl)
+
     useEffect(() => {
       axios
-        .get(fullGetUrl)
+        .get(fullApiUrl)
         .then((res) => {
           if (Array.isArray(res.data)) {
             setDbData(res.data);
@@ -30,12 +25,21 @@ export const useDBCrudOperations = (endpoint) => {
           console.error("❌ Failed to fetch data:", err);
           setLoading(false);
         });
-    }, []);
+    }, [endpoint]);// ✅ fetch only when endpoint changes
 
     return { dbData, loading };
   };
 
-  // UPDATE
+export const useDBCrudOperations = (endpoint) => {
+  if (!endpoint) {
+    throw new Error("❌ useDBCrudOperations requires an endpoint");
+  }
+
+  const fullApiUrl = `${BASE_URL}/api/${endpoint}`;
+ 
+
+
+  // UPDATE ***********************************************************************************
   const updateData = async (id, updatedRecord) => {
     console.log("🔄 Updating data:", id);
     await fetch(`${fullApiUrl}/${id}`, {
@@ -47,7 +51,7 @@ export const useDBCrudOperations = (endpoint) => {
     });
   };
 
-  // ADD
+  // ADD ***********************************************************************************
   const addData = async (newRecord) => {
     console.log("➕ Adding data:", newRecord);
     await fetch(fullApiUrl, {
@@ -59,7 +63,7 @@ export const useDBCrudOperations = (endpoint) => {
     });
   };
 
-  // DELETE
+  // DELETE ***********************************************************************************
   const deleteData = async (id) => {
     console.log("❌ Deleting data:", id);
     await fetch(`${fullApiUrl}/${id}`, {
@@ -71,7 +75,6 @@ export const useDBCrudOperations = (endpoint) => {
   };
 
   return {
-    useGetData,
     updateData,
     addData,
     deleteData,

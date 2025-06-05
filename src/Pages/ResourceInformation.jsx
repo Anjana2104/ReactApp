@@ -5,6 +5,8 @@ import {  HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import {  useEffect ,useState } from "react";
 import { local_Storage_Key} from "../constants/fields";
+import { useGetData } from"../apis/dbCrudOperations"; 
+import { END_POINTS} from "../constants/fields";
 
 const { TabPane } = Tabs;
 
@@ -13,26 +15,42 @@ function AvailableResourceTabs() {
   const navigate = useNavigate();
   const { Title } = Typography;
   const [localData, setLocalData] = useState([]);
+  const { dbData, loading } = useGetData(END_POINTS[sheetName]);
 
-    // ✅ Add this to sync localData when the app loads and when events happen
-    useEffect(() => {
-        const fetchData = () => {
-          const stored = localStorage.getItem(local_Storage_Key[sheetName]);
-          if (stored) {
-            setLocalData(JSON.parse(stored));
-          }
-        };
+   // ✅ Add this to sync localData when the app loads and when events happen
+     useEffect(() => {
+  const handleRefresh = () => {
+    const stored = localStorage.getItem(local_Storage_Key[sheetName]);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setLocalData(parsed);
+    }
+  };
 
-        fetchData(); // Initial load
+  // Initial load: DB or fallback to localStorage
+  if (!loading) {
+    if (dbData.length > 0) {
+      setLocalData(dbData);
+      localStorage.setItem(local_Storage_Key[sheetName], JSON.stringify(dbData));
+    } else {
+      const stored = localStorage.getItem(local_Storage_Key[sheetName]);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setLocalData(parsed);
+      }
+    }
+  }
 
-        // Listen for global updates
-        window.addEventListener("resource-data-updated", fetchData);
+  // Listen for update events from children
+  window.addEventListener("resource-data-updated", handleRefresh);
 
-        // Cleanup listener
-        return () => {
-          window.removeEventListener("resource-data-updated", fetchData);
-        };
-      }, []);
+  // Cleanup
+  return () => {
+    window.removeEventListener("resource-data-updated", handleRefresh);
+  };
+}, [dbData, loading]);
+
+
 
     return (
         <Card style={{ margin: 24 }}>
