@@ -10,6 +10,7 @@ export const exportToExcel = (data) => {
 
 export const parseExcel = (file, callback, sheetName, schema = []) => {
   const reader = new FileReader();
+  console.log("Inside parseExcel - schema :",schema)
 
   reader.onload = (e) => {
     try {

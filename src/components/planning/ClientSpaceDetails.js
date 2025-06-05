@@ -32,6 +32,7 @@ const ClientSpaceDetails = () => {
     sheetName: sheetName,
     localStorageKey: local_Storage_Key[sheetName],
     getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
+    schema : SPACE_SCHEMA
   });
 
   const handleExportFiltered = () => {

@@ -107,12 +107,12 @@ export const PRIMARY_KEYS = {
 
 export const END_POINTS = {
   "Resource Details":"resources",
-  "Project Details" :"",
-  "Request Details" :"",
-  "Space Details"   :"",
-  "Request Tracker" :"",
-  "SOW Details"     :"",
-  "Demand Fullfillment":""
+  "Project Details" :"projects",
+  "Request Details" :"requests",
+  "Space Details"   :"spaces",
+  "Request Tracker" :"tracker",
+  "SOW Details"     :"sow",
+  "Demand Fullfillment":"demands"
 };
  
 export const NONEDITABLE_FIELDS = {

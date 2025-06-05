@@ -31,7 +31,7 @@ function ResourceDetails({ localData }) {
     sheetName: sheetName ,
     localStorageKey: local_Storage_Key[sheetName],
     getRecordId: (record) => String(record[PRIMARY_KEYS[sheetName] ]),
-    schema : {RESOURCE_KEYS_SCHEMA}
+    schema : RESOURCE_KEYS_SCHEMA
   });
 
   const tableRef = useRef();
