@@ -6,30 +6,31 @@ import { useCrudOperations } from "../../utils/crudoperations";
 import { RESOURCE_KEYS_SCHEMA ,local_Storage_Key, PRIMARY_KEYS} from "../../constants/fields";
 import { exportToExcel } from "../../utils/excelUtils";
 import { useRef ,useEffect ,useState } from "react";
-import { useDummyData } from "../../apis/DummyData"; 
+import { useDBCrudOperations } from"../../apis/dbCrudOperations"; 
 
 function ResourceDetails({ localData }) {
     
-  const sheetName = "Resource Details"
-  const { dummyData, loading } = useDummyData();  
+  const sheetName = "Resource Details" 
   const [initialData, setInitialData] = useState([]);
+  const { useGetData } = useDBCrudOperations("resources");
+  const { dbData, loading } = useGetData();
 
-//  useEffect(() => {
-//   if (!loading) {
-//     if (dummyData.length > 0) {
-//       setInitialData(dummyData);
-//       // ✅ Save backend dummyData to localStorage
-//       localStorage.setItem(local_Storage_Key[sheetName], JSON.stringify(dummyData));
-//     } else {
-//       // ✅ Fallback to localStorage if dummyData is empty
-//       const stored = localStorage.getItem(local_Storage_Key[sheetName]);
-//       if (stored) {
-//         const parsed = JSON.parse(stored);
-//         setInitialData(parsed);
-//       }
-//     }
-//   }
-// }, [dummyData, loading]);
+ useEffect(() => {
+  if (!loading) {
+    if (dbData.length > 0) {
+      setInitialData(dbData);
+      // ✅ Save backend Data to localStorage
+      localStorage.setItem(local_Storage_Key[sheetName], JSON.stringify(dbData));
+    } else {
+      // ✅ Fallback to localStorage if Db Data is empty
+      const stored = localStorage.getItem(local_Storage_Key[sheetName]);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setInitialData(parsed);
+      }
+    }
+  }
+}, [dbData, loading]);
 
 
   const {
@@ -40,7 +41,7 @@ function ResourceDetails({ localData }) {
     onEdit,
     onDelete,
     handleConfirmDelete,
-    handleSave,
+    handleModalOk,
     handleFieldChange,
     addNewRecord,
     handleUpload,
@@ -106,7 +107,7 @@ function ResourceDetails({ localData }) {
         record={editingRecord}
         schema={RESOURCE_KEYS_SCHEMA}
         onChange={handleFieldChange}
-        onOk={handleSave}
+        onOk={handleModalOk}
         onCancel={() => setIsModalOpen(false)}
       />
         <Modal

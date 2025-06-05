@@ -22,7 +22,7 @@ const DemandFulfillment = () => {
     onEdit,
     onDelete,
     handleConfirmDelete,
-    handleSave,
+    handleModalOk,
     handleFieldChange,
     addNewRecord,
     handleUpload,
@@ -84,7 +84,7 @@ const DemandFulfillment = () => {
             record={editingRecord}
             schema={DEMAND_FULFILLMENT_SCHEMA}
             onChange={handleFieldChange}
-            onOk={handleSave}
+            onOk={handleModalOk}
             onCancel={() => setIsModalOpen(false)}
         />
 

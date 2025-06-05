@@ -11,7 +11,7 @@ export default function RecordModal({ open, record, schema, onChange, onOk, onCa
         schema.map(({ key, type = "string", values = [] }) => {
           const commonProps = {
             style: { width: "100%" },
-            disabled: key === "S.NO",
+            // disabled: key === "S.NO",
           };
 
           const label = (

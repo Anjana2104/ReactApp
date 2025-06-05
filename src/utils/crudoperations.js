@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { message  } from "antd";
 import { parseExcel } from "./excelUtils";
 import { PRIMARY_KEYS , DERIVED_FIELDS, local_Storage_Key, RESOURCE_KEYS_SCHEMA} from "../constants/fields";
+import { useDBCrudOperations } from"../apis/dbCrudOperations"; 
 
 export const useCrudOperations = ({
   sheetName,
@@ -16,6 +17,14 @@ export const useCrudOperations = ({
   const [mode, setMode] = useState("");
   const [editingKey, setEditingKey] = useState(null);
   
+  const {  
+    addData,
+     updateData, 
+     deleteData
+     } = useDBCrudOperations("resources");
+
+
+  //  ******************************************************************************************
   useEffect(() => {
     const stored = localStorage.getItem(localStorageKey);
     if (stored) {
@@ -23,38 +32,24 @@ export const useCrudOperations = ({
     }
   }, [localStorageKey]);
 
-
-
-  const onDelete = (record) => {
-    setDeleteRecord(record);
-  };
-
-  const handleConfirmDelete = () => {
-    const updated = data.filter((item) => getRecordId(item) !== getRecordId(deleteRecord));
-    setData(updated);
-    localStorage.setItem(localStorageKey, JSON.stringify(updated));
-    setDeleteRecord(null);
-    window.dispatchEvent(new Event("resource-data-updated"));
-    message.success("Record deleted");
-  };
-
-  const handleSave = (key,field, value) => {
-    const updated = { ...editingRecord, [field]: value };
-    setEditingRecord(updated);
-    handleModalOk(updated); 
-    setEditingKey(null);   
-    window.dispatchEvent(new Event("resource-data-updated"));
-    message.success("Record updated");
-  };
-
-    const onEdit = (updatedRecord) => {
-    console.log("inside on edit - updatedRecord - ",updatedRecord)
+  //  ******************************************************************************************
+ const handleFieldChange = (e, key) => {
+    setEditingRecord((prev) => ({
+      ...prev,
+      [key]: e?.target?.value ?? "",  // avoids storing the full event object
+    }));
+};
+  //  ******************************************************************************************
+   const onEdit = async (updatedRecord) => {
+    // console.log("onedit:syncing with DB:updatedRecord:id -",updatedRecord,getRecordId(updatedRecord))
+    // Update Data in the Database 
+    updateData( getRecordId(updatedRecord) , updatedRecord )
     const updatedData = data.map((item) =>
     getRecordId(item) === getRecordId(updatedRecord) ? updatedRecord : item
     );
     setData(updatedData);
     localStorage.setItem(localStorageKey, JSON.stringify(updatedData));
-    console.log("inside on edit - updated data - ",updatedData)
+    // console.log("inside on edit - updated data - ",updatedData)
     setEditingKey(null); 
     // setEditingRecord({ ...updatedRecord});
     setIsModalOpen(false);
@@ -62,55 +57,50 @@ export const useCrudOperations = ({
     window.dispatchEvent(new Event("resource-data-updated"));
     message.success("Record updated");
   };
+
+  //  ******************************************************************************************
    
 const handleModalOk = () => {
-      try {
+    try {
+      const id = getRecordId(editingRecord);
+      console.log("inside handleModalOk : id   -",id)
 
-        const id = getRecordId(editingRecord);
-        // console.log("inside handleModalOk : id   -",id)
+      console.log("adding data in db  : updated   -",editingRecord)
+      addData(editingRecord)
 
-        const updated = data.some((d) => getRecordId(d) === id)
-          ? data.map((d) => (getRecordId(d) === id ? editingRecord : d))
-          : [...data, editingRecord];
+      const updated = data.some((d) => getRecordId(d) === id)
+        ? data.map((d) => (getRecordId(d) === id ? editingRecord : d))
+        : [...data, editingRecord];
 
-        // console.log("inside handleModalOk : updated   -",updated)
-
-        setData(updated);
-        localStorage.setItem(localStorageKey, JSON.stringify(updated)); 
-        setEditingRecord(null);
-        setIsModalOpen(false);
-        setEditingKey(null);
-        window.dispatchEvent(new Event("resource-data-updated"));
-        message.success("Record saved");
-      } catch (err) {
-        console.error("Error saving record:", err);
-        message.error("Failed to save record. Please check inputs.");
-        setIsModalOpen(false);
-      }
-};
-
- const handleFieldChange = (e, key) => {
-    setEditingRecord((prev) => ({
-      ...prev,
-      [key]: e?.target?.value ?? "",  // avoids storing the full event object
-    }));
+      console.log("inside handleModalOk : updated   -",updated)
+      setData(updated);
+      
+      localStorage.setItem(localStorageKey, JSON.stringify(updated)); 
+      setEditingRecord(null);
+      setIsModalOpen(false);
+      setEditingKey(null);
+      window.dispatchEvent(new Event("resource-data-updated"));
+      message.success("Record saved");
+    } catch (err) {
+      console.error("Error saving record:", err);
+      message.error("Failed to save record. Please check inputs.");
+      setIsModalOpen(false);
+    }
 };
 
 
+//  ******************************************************************************************
  const addNewRecord = () => {
-  const newId = `${Date.now()}-${data.length}`;
   const newRecord = {
-    ...(data[0] ? Object.fromEntries(Object.keys(data[0]).map(k => [k, ""])) : {}),
-    "S.NO": data.length + 1,
-    key: newId                   // ✅ must match what's used in getRecordId
+    ...(data[0] ? Object.fromEntries(Object.keys(data[0]).map(k => [k, ""])) : {})
   };
-
-  // console.log("New record beofre adding -",newRecord)
+  console.log("New record before adding -",newRecord)
   setEditingRecord(newRecord);
   setMode("Add");
   setIsModalOpen(true);
 };
 
+//  ******************************************************************************************
   const handleUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -134,9 +124,28 @@ const handleModalOk = () => {
         localStorage.setItem(localStorageKey, JSON.stringify(enriched));
         message.success("Data saved to localStorage");
         window.dispatchEvent(new Event("resource-data-updated"));
-      }, sheetName ,RESOURCE_KEYS_SCHEMA);
+      }, sheetName ,schema);
     }
   };
+
+  //  ******************************************************************************************
+  const onDelete = (record) => {
+    setDeleteRecord(record);
+  };
+//  ******************************************************************************************
+  const handleConfirmDelete = () => {
+
+    const updated = data.filter((item) => getRecordId(item) !== getRecordId(deleteRecord));
+    setData(updated);
+    //  Delete data from DB 
+    deleteData(getRecordId(deleteRecord))
+    localStorage.setItem(localStorageKey, JSON.stringify(updated));
+    setDeleteRecord(null);
+    window.dispatchEvent(new Event("resource-data-updated"));
+    message.success("Record deleted");
+  };
+  //  ******************************************************************************************
+
 
   return {
     data,
@@ -153,7 +162,6 @@ const handleModalOk = () => {
     onDelete,
     handleConfirmDelete,
     handleModalOk,
-    handleSave,
     handleFieldChange,
     addNewRecord,
     // EditableCell,

@@ -22,7 +22,7 @@ const ClientSpaceDetails = () => {
     onEdit,
     onDelete,
     handleConfirmDelete,
-    handleSave,
+    handleModalOk,
     handleFieldChange,
     addNewRecord,
     handleUpload,
@@ -82,7 +82,7 @@ const ClientSpaceDetails = () => {
             record={editingRecord}
             schema={SPACE_SCHEMA}
             onChange={handleFieldChange}
-            onOk={handleSave}
+            onOk={handleModalOk}
             onCancel={() => setIsModalOpen(false)}
         />
 
