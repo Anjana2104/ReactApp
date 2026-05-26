@@ -20,3 +20,5 @@ jobs:
           from_branch: dev
           target_branch: main
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          message: "Merge dev into main [automated]"
+          disable_fastforwards: false
