@@ -6,6 +6,9 @@ on:
       - dev
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   merge:
     runs-on: ubuntu-latest
@@ -15,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
